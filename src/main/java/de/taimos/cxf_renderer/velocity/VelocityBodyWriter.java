@@ -27,19 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
 
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.Log4JLogChute;
 
 import de.taimos.cxf_renderer.model.AbstractViewBodyWriter;
 import de.taimos.cxf_renderer.model.ViewModel;
@@ -48,17 +46,22 @@ public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
 
 	static {
 		try {
-			/* first, we init the runtime engine. Defaults are fine. */
-			Velocity.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
-			Velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogSystem");
-			Velocity.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, "./templates");
+			// Use ClasspathLoader
+			Velocity.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
+			Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+			// Use UTF-8
+			Velocity.setProperty("input.encoding", "UTF-8");
+			Velocity.setProperty("output.encoding", "UTF-8");
+			// Use log4j
+			Velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getCanonicalName());
+			Velocity.setProperty("runtime.log.logsystem.log4j.logger", "org.apache.velocity");
 			Velocity.init();
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static String evaluateVM(final String template, final Map<String, Object> variables) throws IOException {
+	private static String evaluateVM(final String name, final Map<String, Object> variables) throws IOException {
 		try {
 			/* lets make a Context and put data into it */
 			final VelocityContext context = new VelocityContext();
@@ -68,22 +71,12 @@ public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
 				context.put(entry.getKey(), entry.getValue());
 			}
 
+			final Template template = Velocity.getTemplate(name);
 			final StringWriter w = new StringWriter();
-			Velocity.evaluate(context, w, "generation of template", template);
+			template.merge(context, w);
 			return w.toString();
-		} catch (ParseErrorException | MethodInvocationException | ResourceNotFoundException e) {
+		} catch (final Exception e) {
 			throw new InternalServerErrorException(e);
-		}
-	}
-
-	private static String readContent(final String name) throws IOException {
-		try (Scanner s = new Scanner(VelocityBodyWriter.class.getResourceAsStream(name))) {
-			final StringBuilder sb = new StringBuilder();
-			while (s.hasNextLine()) {
-				sb.append(s.nextLine());
-				sb.append("\n");
-			}
-			return sb.toString();
 		}
 	}
 
@@ -92,8 +85,7 @@ public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
 			WebApplicationException {
 
 		final String templateName = this.generateTemplateName(t.getViewName(), mediaType);
-		final String content = VelocityBodyWriter.readContent(templateName);
-		final String evaluate = VelocityBodyWriter.evaluateVM(content, t.getModel());
+		final String evaluate = VelocityBodyWriter.evaluateVM(templateName, t.getModel());
 		entityStream.write(evaluate.getBytes());
 
 	}
