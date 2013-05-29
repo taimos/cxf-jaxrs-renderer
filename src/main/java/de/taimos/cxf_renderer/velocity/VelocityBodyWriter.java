@@ -1,23 +1,14 @@
 package de.taimos.cxf_renderer.velocity;
 
 /*
- * #%L
- * MVC Renderer for JAX-RS with CXF
- * %%
- * Copyright (C) 2012 - 2013 Taimos GmbH
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L MVC Renderer for JAX-RS with CXF %% Copyright (C) 2012 - 2013 Taimos GmbH %% Licensed under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License. #L%
  */
 
 import java.io.IOException;
@@ -43,7 +34,7 @@ import de.taimos.cxf_renderer.model.AbstractViewBodyWriter;
 import de.taimos.cxf_renderer.model.ViewModel;
 
 public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
-
+	
 	static {
 		try {
 			// Use ClasspathLoader
@@ -60,17 +51,18 @@ public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
 			e.printStackTrace();
 		}
 	}
-
-	private static String evaluateVM(final String name, final Map<String, Object> variables) throws IOException {
+	
+	
+	private static String evaluateVM(final String name, final Map<String, Object> variables) {
 		try {
 			/* lets make a Context and put data into it */
 			final VelocityContext context = new VelocityContext();
-
+			
 			final Set<Entry<String, Object>> entrySet = variables.entrySet();
 			for (final Entry<String, Object> entry : entrySet) {
 				context.put(entry.getKey(), entry.getValue());
 			}
-
+			
 			final Template template = Velocity.getTemplate(name);
 			final StringWriter w = new StringWriter();
 			template.merge(context, w);
@@ -79,19 +71,18 @@ public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
 			throw new InternalServerErrorException(e);
 		}
 	}
-
+	
 	@Override
-	protected void write(final ViewModel t, final MediaType mediaType, final OutputStream entityStream) throws IOException,
-			WebApplicationException {
-
+	protected void write(final ViewModel t, final MediaType mediaType, final OutputStream entityStream) throws IOException, WebApplicationException {
+		
 		final String templateName = this.generateTemplateName(t.getViewName(), mediaType);
 		final String evaluate = VelocityBodyWriter.evaluateVM(templateName, t.getModel());
 		entityStream.write(evaluate.getBytes());
-
+		
 	}
-
+	
 	protected abstract String generateTemplateName(String viewName, MediaType mediaType);
-
+	
 	@Override
 	protected List<MediaType> getMediaTypes() {
 		final List<MediaType> r = new ArrayList<>();
@@ -99,5 +90,5 @@ public abstract class VelocityBodyWriter extends AbstractViewBodyWriter {
 		r.add(MediaType.TEXT_PLAIN_TYPE);
 		return r;
 	}
-
+	
 }
