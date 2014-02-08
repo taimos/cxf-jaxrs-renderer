@@ -11,7 +11,7 @@
 	<name>MVC Renderer for JAX-RS with CXF</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cxf.version>2.7.8</cxf.version>
+		<cxf.version>2.7.10</cxf.version>
 	</properties>
 	<developers>
 		<developer>
