@@ -6,7 +6,7 @@
 		<version>2</version>
 	</parent>
 	<artifactId>cxf-jaxrs-renderer</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<name>MVC Renderer for JAX-RS with CXF</name>
 	<description>MVC Renderer for JAX-RS with CXF</description>
 	<inceptionYear>2012</inceptionYear>
@@ -39,7 +39,7 @@
 		<url>git://github.com/taimos/cxf-jaxrs-renderer.git</url>
 		<connection>scm:git:git://github.com/taimos/cxf-jaxrs-renderer.git</connection>
 		<developerConnection>scm:git:git@github.com:taimos/cxf-jaxrs-renderer.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>v1.4</tag>
 	</scm>
 	<issueManagement>
 		<system>github</system>
