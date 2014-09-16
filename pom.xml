@@ -11,7 +11,7 @@
 	<description>MVC Renderer for JAX-RS with CXF</description>
 	<inceptionYear>2012</inceptionYear>
 	<properties>
-		<cxf.version>3.0.0</cxf.version>
+		<cxf.version>3.0.1</cxf.version>
 	</properties>
 	<dependencies>
 		<dependency>
