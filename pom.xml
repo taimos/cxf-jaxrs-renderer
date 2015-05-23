@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>de.taimos</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>4</version>
+		<version>5</version>
 	</parent>
 	<artifactId>cxf-jaxrs-renderer</artifactId>
 	<version>1.7-SNAPSHOT</version>
@@ -11,13 +11,13 @@
 	<description>MVC Renderer for JAX-RS with CXF</description>
 	<inceptionYear>2012</inceptionYear>
 	<properties>
-		<cxf.version>3.0.4</cxf.version>
+		<cxf.version>3.1.0</cxf.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.10</version>
+			<version>1.7.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
